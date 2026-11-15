@@ -1,0 +1,8 @@
+node_modules
+dist
+.angular
+apps/api/dev.db
+apps/api/dev.db-journal
+apps/api/.env
+apps/api/uploads
+.DS_Store

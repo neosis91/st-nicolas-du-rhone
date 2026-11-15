@@ -1,0 +1,250 @@
+<section class="flex min-h-[70dvh] flex-col gap-3 font-sans text-navy-deep">
+  <header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" class="rounded-md border border-navy/15 bg-paper px-3 py-1.5 text-sm font-medium hover:bg-cream" (click)="today()">
+        Aujourd’hui
+      </button>
+      <div class="flex items-center gap-1">
+        <button type="button" class="grid size-9 place-items-center rounded-md border border-navy/15 bg-paper hover:bg-cream" (click)="previous()" aria-label="Période précédente">
+          ‹
+        </button>
+        <button type="button" class="grid size-9 place-items-center rounded-md border border-navy/15 bg-paper hover:bg-cream" (click)="next()" aria-label="Période suivante">
+          ›
+        </button>
+      </div>
+      <h2 class="min-w-0 text-lg font-semibold tracking-tight sm:text-xl">
+        @if (view() === 'week') {
+          {{ weekTitle() }}
+        } @else {
+          {{ title() }}
+        }
+      </h2>
+    </div>
+
+    <div class="inline-flex w-full rounded-lg border border-navy/15 bg-paper p-0.5 sm:w-auto" role="tablist" aria-label="Vue agenda">
+      <button
+        type="button"
+        role="tab"
+        class="flex-1 rounded-md px-3 py-1.5 text-sm font-medium sm:flex-none"
+        [class.bg-navy]="view() === 'month'"
+        [class.text-white]="view() === 'month'"
+        [class.text-muted]="view() !== 'month'"
+        (click)="setView('month')"
+      >
+        Mois
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="flex-1 rounded-md px-3 py-1.5 text-sm font-medium sm:flex-none"
+        [class.bg-navy]="view() === 'week'"
+        [class.text-white]="view() === 'week'"
+        [class.text-muted]="view() !== 'week'"
+        (click)="setView('week')"
+      >
+        Semaine
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="flex-1 rounded-md px-3 py-1.5 text-sm font-medium sm:flex-none"
+        [class.bg-navy]="view() === 'agenda'"
+        [class.text-white]="view() === 'agenda'"
+        [class.text-muted]="view() !== 'agenda'"
+        (click)="setView('agenda')"
+      >
+        Planning
+      </button>
+    </div>
+  </header>
+
+  @if (view() === 'month') {
+    <div class="min-h-0 flex-1 overflow-auto rounded-xl border border-navy/10 bg-paper">
+      <div class="grid grid-cols-7 border-b border-navy/10 bg-cream/60 text-center text-[11px] font-semibold uppercase tracking-wide text-muted sm:text-xs">
+        @for (label of weekdays; track label) {
+          <div class="px-1 py-2">{{ label }}</div>
+        }
+      </div>
+      <div class="grid grid-cols-7 auto-rows-[minmax(4.5rem,1fr)] sm:auto-rows-[minmax(6.5rem,1fr)]">
+        @for (day of monthDays(); track day.key) {
+          <button
+            type="button"
+            class="group flex min-h-[4.5rem] flex-col gap-0.5 border-b border-r border-navy/8 p-1 text-left transition hover:bg-cream/70 sm:min-h-[6.5rem] sm:p-1.5"
+            [class.bg-cream/40]="!day.inMonth"
+            [class.ring-2]="day.key === selectedDay().key"
+            [class.ring-inset]="day.key === selectedDay().key"
+            [class.ring-river/40]="day.key === selectedDay().key"
+            (click)="pickDay(day)"
+            (dblclick)="openDay(day)"
+          >
+            <span
+              class="inline-flex size-6 items-center justify-center rounded-full text-xs font-semibold sm:size-7 sm:text-sm"
+              [class.bg-navy]="day.isToday"
+              [class.text-white]="day.isToday"
+              [class.text-muted]="!day.inMonth && !day.isToday"
+              [class.text-navy-deep]="day.inMonth && !day.isToday"
+            >
+              {{ day.date.getDate() }}
+            </span>
+            <div class="flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden">
+              @for (event of day.events.slice(0, 3); track event.id) {
+                <span
+                  class="truncate rounded px-1 py-0.5 text-[10px] font-medium leading-tight sm:text-[11px] {{ kindClass(event.kind) }}"
+                  (click)="openEvent(event, $event)"
+                  title="{{ event.title }}"
+                >
+                  <span class="hidden sm:inline">{{ timeOf(event.startsAt) }} · </span>{{ event.title }}
+                </span>
+              }
+              @if (day.events.length > 3) {
+                <span class="px-1 text-[10px] font-medium text-muted">+{{ day.events.length - 3 }}</span>
+              }
+            </div>
+          </button>
+        }
+      </div>
+    </div>
+
+    <aside class="rounded-xl border border-navy/10 bg-paper p-3 sm:hidden">
+      <h3 class="mb-2 text-sm font-semibold capitalize">{{ dayLabel(selectedDay().date) }}</h3>
+      @if (!selectedDay().events.length) {
+        <p class="text-sm text-muted">Aucun événement.</p>
+        <button type="button" class="mt-2 text-sm font-medium text-navy underline" (click)="openDay(selectedDay())">Ajouter</button>
+      } @else {
+        <ul class="space-y-2">
+          @for (event of selectedDay().events; track event.id) {
+            <li>
+              <button type="button" class="flex w-full items-start gap-2 rounded-lg p-2 text-left hover:bg-cream" (click)="selectEvent.emit(event)">
+                <span class="mt-1 size-2.5 shrink-0 rounded-full {{ kindClass(event.kind) }}"></span>
+                <span>
+                  <span class="block text-xs text-muted">{{ timeOf(event.startsAt) }} · {{ event.kind }}</span>
+                  <span class="font-medium">{{ event.title }}</span>
+                </span>
+              </button>
+            </li>
+          }
+        </ul>
+        <button type="button" class="mt-2 text-sm font-medium text-navy underline" (click)="openDay(selectedDay())">Ajouter</button>
+      }
+    </aside>
+  }
+
+  @if (view() === 'week') {
+    <div class="min-h-0 flex-1 overflow-auto rounded-xl border border-navy/10 bg-paper">
+      <div class="sticky top-0 z-20 min-w-[44rem] border-b border-navy/10 bg-cream/90 backdrop-blur-sm" [style.grid-template-columns]="weekGridCols" style="display: grid">
+        <div class="border-r border-navy/10"></div>
+        @for (day of weekDays(); track day.key) {
+          <button
+            type="button"
+            class="border-r border-navy/8 px-1 py-2 text-center last:border-r-0 hover:bg-cream"
+            (click)="pickDay(day)"
+          >
+            <div class="text-[10px] font-semibold uppercase tracking-wide text-muted sm:text-[11px]">
+              {{ weekdays[$index] }}
+            </div>
+            <div
+              class="mx-auto mt-0.5 grid size-7 place-items-center rounded-full text-sm font-semibold sm:size-8"
+              [class.bg-navy]="day.isToday"
+              [class.text-white]="day.isToday"
+            >
+              {{ day.date.getDate() }}
+            </div>
+          </button>
+        }
+      </div>
+
+      <div class="relative min-w-[44rem]" [style.grid-template-columns]="weekGridCols" [style.height.px]="weekGridHeight" style="display: grid">
+        <div class="relative border-r border-navy/10 bg-paper">
+          @for (hour of weekHours; track hour) {
+            <div
+              class="absolute right-1.5 -translate-y-1/2 text-[10px] font-medium tabular-nums text-muted sm:text-[11px]"
+              [style.top.px]="(hour - weekHours[0]) * weekHourPx"
+            >
+              {{ hourLabel(hour) }}
+            </div>
+          }
+        </div>
+
+        @for (day of weekDays(); track day.key) {
+          <div
+            class="relative cursor-pointer border-r border-navy/8 last:border-r-0 hover:bg-cream/30"
+            (click)="openAtPointer(day, $event)"
+            (dblclick)="openDay(day)"
+          >
+            @for (hour of weekHours; track hour) {
+              <div
+                class="absolute inset-x-0 border-t border-navy/8"
+                [style.top.px]="(hour - weekHours[0]) * weekHourPx"
+                [style.height.px]="weekHourPx"
+              ></div>
+            }
+
+            @for (event of day.events; track event.id) {
+              <button
+                type="button"
+                class="absolute inset-x-0.5 z-10 overflow-hidden rounded px-1 py-0.5 text-left text-[10px] font-medium leading-tight shadow-sm sm:inset-x-1 sm:text-[11px] {{ kindClass(event.kind) }}"
+                [style.top.px]="eventTop(event.startsAt)"
+                [style.height.px]="eventHeight()"
+                (click)="openEvent(event, $event)"
+                title="{{ timeOf(event.startsAt) }} · {{ event.title }}"
+              >
+                <span class="block truncate opacity-90">{{ timeOf(event.startsAt) }}</span>
+                <span class="line-clamp-2">{{ event.title }}</span>
+              </button>
+            }
+
+            @if (nowLine()?.dayKey === day.key) {
+              <div class="pointer-events-none absolute inset-x-0 z-20 flex items-center" [style.top.px]="nowLine()!.top">
+                <span class="size-2 -ml-1 rounded-full bg-burgundy"></span>
+                <span class="h-0.5 flex-1 bg-burgundy"></span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (view() === 'agenda') {
+    <div class="min-h-0 flex-1 overflow-auto rounded-xl border border-navy/10 bg-paper">
+      @for (day of agendaDays(); track day.key) {
+        <div class="grid grid-cols-[4.5rem_1fr] gap-3 border-b border-navy/8 px-3 py-3 sm:grid-cols-[7rem_1fr] sm:gap-4 sm:px-4">
+          <div class="pt-0.5">
+            <div class="text-[11px] font-semibold uppercase tracking-wide text-muted">
+              {{ weekdays[(day.date.getDay() + 6) % 7] }}
+            </div>
+            <div
+              class="mt-1 inline-flex size-8 items-center justify-center rounded-full text-sm font-semibold"
+              [class.bg-navy]="day.isToday"
+              [class.text-white]="day.isToday"
+            >
+              {{ day.date.getDate() }}
+            </div>
+          </div>
+          <div class="min-w-0 space-y-2">
+            @for (event of day.events; track event.id) {
+              <button
+                type="button"
+                class="flex w-full items-start gap-3 rounded-lg border border-navy/8 px-3 py-2 text-left hover:bg-cream/80"
+                (click)="selectEvent.emit(event)"
+              >
+                <span class="mt-1.5 size-2.5 shrink-0 rounded-full {{ kindClass(event.kind) }}"></span>
+                <span class="min-w-0">
+                  <span class="block text-xs text-muted">{{ timeOf(event.startsAt) }} · {{ event.kind }}</span>
+                  <span class="block truncate font-medium">{{ event.title }}</span>
+                  @if (event.location) {
+                    <span class="block truncate text-xs text-muted">{{ event.location }}</span>
+                  }
+                </span>
+              </button>
+            } @empty {
+              <p class="py-2 text-sm text-muted">Rien de prévu</p>
+            }
+          </div>
+        </div>
+      } @empty {
+        <p class="p-6 text-sm text-muted">Aucun événement sur cette période.</p>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,11 @@
+{
+  "name": "stnicolas-site",
+  "private": true,
+  "scripts": {
+    "dev": "sh dev.sh",
+    "dev:api": "npm run start:dev --prefix apps/api",
+    "dev:web": "npm run start --prefix apps/web",
+    "build": "npm run build --prefix apps/api && npm run build --prefix apps/web",
+    "db:setup": "npm run db:setup --prefix apps/api"
+  }
+}

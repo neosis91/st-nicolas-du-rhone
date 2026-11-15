@@ -1,0 +1,137 @@
+<a class="skip" href="#contenu">Aller au contenu</a>
+<div class="topbar">
+  <div class="wrap-wide">
+    <span>{{ settings.diocese }} · {{ settings.sector }}</span>
+    <span>
+      @if (settings.phoneHref) {
+        <a [href]="settings.phoneHref">{{ settings.phone }}</a>
+      }
+      ·
+      <a [href]="'mailto:' + settings.email">{{ settings.email }}</a>
+    </span>
+  </div>
+</div>
+<header class="site-header">
+  <div class="wrap-wide header-row">
+    <a class="brand" routerLink="/" [attr.aria-label]="settings.name" (click)="closeMenu()">
+      <img class="logo-for-light" ngSrc="/logo.png" alt="" width="220" height="100" priority disableOptimizedSrcset />
+      <img class="logo-for-dark" ngSrc="/logo-clair.png" alt="" width="220" height="100" disableOptimizedSrcset />
+    </a>
+    <div class="header-end">
+    <nav id="site-nav" class="nav" [class.is-open]="menuOpen()" aria-label="Navigation principale">
+      <a routerLink="/" routerLinkActive="is-current" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Accueil</a>
+      <div class="drop">
+        <a routerLink="/paroisse" routerLinkActive="is-current" ariaCurrentWhenActive="page" (click)="closeMenu()">La paroisse</a>
+        <div class="drop-panel">
+          <a routerLink="/paroisse" (click)="closeMenu()">Présentation</a>
+          <a routerLink="/paroisse/equipe" (click)="closeMenu()">L’équipe</a>
+          <a routerLink="/paroisse" fragment="communes" (click)="closeMenu()">Les communes</a>
+        </div>
+      </div>
+      <div class="drop">
+        <a routerLink="/celebrer" routerLinkActive="is-current" ariaCurrentWhenActive="page" (click)="closeMenu()">Célébrer</a>
+        <div class="drop-panel">
+          <a routerLink="/celebrer" (click)="closeMenu()">Horaires des messes</a>
+          <a routerLink="/feuilles" (click)="closeMenu()">Feuilles</a>
+          <a routerLink="/celebrer/sacrements" (click)="closeMenu()">Sacrements</a>
+        </div>
+      </div>
+      <a routerLink="/vivre" routerLinkActive="is-current" ariaCurrentWhenActive="page" (click)="closeMenu()">Vie paroissiale</a>
+      <a routerLink="/agenda" routerLinkActive="is-current" ariaCurrentWhenActive="page" (click)="closeMenu()">Agenda</a>
+      <a routerLink="/actualites" routerLinkActive="is-current" ariaCurrentWhenActive="page" (click)="closeMenu()">Actualités</a>
+      <a routerLink="/contact" routerLinkActive="is-current" ariaCurrentWhenActive="page" (click)="closeMenu()">Contact</a>
+    </nav>
+    <button appTheme type="button"></button>
+    <a class="btn btn-gold nav-donate" routerLink="/don" (click)="closeMenu()">Je donne</a>
+    @if (auth.token()) {
+      <div class="account">
+        <button
+          type="button"
+          class="avatar"
+          [attr.aria-expanded]="accountOpen()"
+          [attr.aria-label]="'Compte de ' + (auth.name() || 'la personne connectée')"
+          (click)="toggleAccount($event)"
+        >
+          {{ initials(auth.name()) }}
+        </button>
+        @if (accountOpen()) {
+          <div class="account-panel" (click)="$event.stopPropagation()">
+            <p class="account-name">{{ auth.name() }}</p>
+            <a routerLink="/admin" (click)="accountOpen.set(false)">Administration</a>
+            <button type="button" (click)="logout()">Se déconnecter</button>
+          </div>
+        }
+      </div>
+    }
+    <button class="nav-toggle" type="button" aria-label="Menu" [attr.aria-expanded]="menuOpen()" aria-controls="site-nav" (click)="toggleMenu()">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+      </svg>
+    </button>
+    </div>
+  </div>
+</header>
+<main id="contenu">
+  <router-outlet />
+</main>
+<footer class="site-footer">
+  <div class="wrap-wide footer-brand">
+    <a routerLink="/">
+      <img ngSrc="/logo-clair.png" [alt]="settings.name" width="210" height="96" disableOptimizedSrcset />
+    </a>
+  </div>
+  <div class="wrap-wide footer-grid">
+    <div>
+      <h2>Secrétariat</h2>
+      <p>
+        {{ settings.street }}<br />
+        {{ settings.postalCode }} {{ settings.city }}
+      </p>
+      <p style="margin-top: 0.7rem">
+        @if (settings.phoneHref) {
+          <a [href]="settings.phoneHref">{{ settings.phone }}</a><br />
+        }
+        <a [href]="'mailto:' + settings.email">{{ settings.email }}</a>
+      </p>
+      <p style="margin-top: 0.7rem">Permanence : {{ settings.hours }}</p>
+    </div>
+    <div>
+      <h2>Célébrer</h2>
+      <ul>
+        <li><a routerLink="/celebrer">Horaires des messes</a></li>
+        <li><a routerLink="/feuilles">Feuilles</a></li>
+        <li><a routerLink="/celebrer/sacrements" fragment="bapteme">Baptême</a></li>
+        <li><a routerLink="/celebrer/sacrements" fragment="mariage">Mariage</a></li>
+        <li><a routerLink="/celebrer/sacrements" fragment="funerailles">Funérailles</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>La paroisse</h2>
+      <ul>
+        <li><a routerLink="/paroisse">Présentation</a></li>
+        <li><a routerLink="/paroisse/equipe">Équipe</a></li>
+        <li><a routerLink="/vivre">Catéchèse et services</a></li>
+        <li><a routerLink="/agenda">Agenda</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Liens</h2>
+      <ul>
+        <li><a [href]="settings.dioceseUrl">{{ settings.diocese }}</a></li>
+        <li><a [href]="settings.parishOnDioceseUrl">Page diocésaine de la paroisse</a></li>
+        <li><a [href]="settings.readingsUrl">Lectures du jour (AELF)</a></li>
+        <li><a routerLink="/don">Denier de l’Église</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap-wide legal">
+    <span>© {{ year }} {{ settings.name }}</span>
+    <span>
+      <a routerLink="/mentions-legales">Mentions légales</a>
+      ·
+      <a routerLink="/admin/connexion">Espace secrétariat</a>
+      ·
+      <a [href]="settings.dioceseUrl">{{ settings.domain === 'stnicolasdurhone.fr' ? 'ardeche.catholique.fr' : settings.diocese }}</a>
+    </span>
+  </div>
+</footer>

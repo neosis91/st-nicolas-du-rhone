@@ -1,0 +1,53 @@
+<div class="toolbar">
+  <h1>Équipe</h1>
+  <button class="btn btn-navy" type="button" (click)="openCreate()">Ajouter une personne</button>
+</div>
+@if (error() && !dialogOpen()) { <p class="note">{{ error() }}</p> }
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead><tr><th class="drag-col"><span class="visually-hidden">Ordre</span></th><th>Nom</th><th>Rôle</th><th></th></tr></thead>
+    <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+      @for (row of rows(); track row.id) {
+        <tr cdkDrag cdkDragLockAxis="y">
+          <td><button appDragHandle type="button" [label]="'Déplacer ' + row.name"></button></td>
+          <td>{{ row.name }}</td>
+          <td>{{ row.role }}</td>
+          <td class="row-actions">
+            <button appEdit type="button" [label]="'Modifier ' + row.name" (click)="edit(row)"></button>
+            <button appDelete type="button" [label]="'Supprimer ' + row.name" (click)="remove(row)"></button>
+          </td>
+          <ng-template cdkDragPreview><div class="row-preview">{{ row.name }}</div></ng-template>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<ng-template #editor>
+  <div class="admin-modal">
+    <div class="admin-modal-head">
+      <h1 id="admin-modal-title">{{ editingId() ? 'Modifier une personne' : 'Ajouter une personne' }}</h1>
+      <button appClose type="button" (click)="close()"></button>
+    </div>
+    <form class="form" method="post" novalidate (submit)="$event.preventDefault(); save()">
+      <label>Nom <input [formField]="form.name" /><app-field-error [field]="form.name" /></label>
+      <label>Rôle <input [formField]="form.role" /><app-field-error [field]="form.role" /></label>
+      <label>Précision <textarea [formField]="form.detail"></textarea><app-field-error [field]="form.detail" /></label>
+      <label>Téléphone <input [formField]="form.phone" /><app-field-error [field]="form.phone" /></label>
+      <label>Courriel <input [formField]="form.email" /><app-field-error [field]="form.email" /></label>
+      <label>
+        Groupe
+        <select [formField]="form.groupName">
+          <option value="ministre">Ministre ordonné</option>
+          <option value="curie">Curie paroissiale</option>
+        </select>
+        <app-field-error [field]="form.groupName" />
+      </label>
+      <label class="check"><input type="checkbox" [formField]="form.showOnContact" /> Afficher sur la page contact</label>
+      @if (error()) { <p class="note">{{ error() }}</p> }
+      <div class="actions">
+        <button class="btn btn-navy" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

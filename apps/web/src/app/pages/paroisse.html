@@ -1,0 +1,47 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> La paroisse</p>
+    <p class="eyebrow">{{ settings.sector }}</p>
+    <h1>Une paroisse au fil du Rhône</h1>
+    <p class="lede">
+      {{ settings.shortName }} relie dix communes de la moyenne vallée, dans le
+      <a [href]="settings.dioceseUrl">{{ settings.diocese }}</a>. Le secrétariat est à {{ settings.city }}.
+      Les deux bourgs les plus habités de la paroisse sont La Voulte et Le Pouzin.
+    </p>
+  </header>
+  <div class="stack" style="padding-bottom: 2rem">
+    @for (paragraph of about; track paragraph) {
+      <p>{{ paragraph }}</p>
+    }
+    <p>
+      <a routerLink="/paroisse/equipe">Voir l’équipe paroissiale</a>
+      ·
+      <a [href]="settings.parishOnDioceseUrl">Fiche de la paroisse sur le site du diocèse</a>
+    </p>
+  </div>
+  <section id="communes" class="anchor-block">
+    <h2>Au fil du Rhône</h2>
+    <div class="towns pair">
+      @for (place of valley; track place.id) {
+        <article class="town">
+          <strong>{{ place.town }}</strong>
+          <span>
+            {{ place.church ? place.church + (place.address ? ' · ' + place.address : '') : 'Commune de la paroisse' }}
+          </span>
+          <p style="margin-top: 0.4rem">{{ place.note }}</p>
+        </article>
+      }
+    </div>
+  </section>
+  <section class="anchor-block">
+    <h2>Dans les coteaux</h2>
+    <div class="towns trio" style="padding-bottom: 2.5rem">
+      @for (place of hills; track place.id) {
+        <article class="town">
+          <strong>{{ place.town }}</strong>
+          <p style="margin-top: 0.4rem">{{ place.note }}</p>
+        </article>
+      }
+    </div>
+  </section>
+</div>

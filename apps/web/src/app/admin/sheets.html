@@ -1,0 +1,101 @@
+<div class="toolbar">
+  <h1>Feuilles</h1>
+  <button class="btn btn-navy" type="button" (click)="openCreate()">Déposer une feuille</button>
+</div>
+<p class="note">
+  Déposez les PDF préparés à la main. La création automatique, à partir des horaires de messes,
+  de la vie paroissiale, de l’agenda et des actualités, est prévue : le formulaire indique déjà
+  ce qu’elle pourra reprendre pour la période choisie.
+</p>
+@if (error() && !dialogOpen()) { <p class="note">{{ error() }}</p> }
+
+<h2>Feuilles de semaine</h2>
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead><tr><th>Période</th><th>Titre</th><th>Fichier</th><th>État</th><th></th></tr></thead>
+    <tbody>
+      @for (row of weeks(); track row.id) {
+        <tr>
+          <td>{{ formatSheetPeriod(row.kind, row.periodStart) }}</td>
+          <td>{{ row.title }}</td>
+          <td>{{ row.originalName }}<br /><span class="meta">{{ formatSize(row.size) }}</span></td>
+          <td>{{ row.published ? 'Publiée' : 'Brouillon' }}</td>
+          <td class="row-actions">
+            <button class="btn btn-line-dark btn-small" type="button" (click)="download(row)">Télécharger</button>
+            <button appDelete type="button" [label]="'Supprimer ' + row.title" (click)="remove(row)"></button>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="5">Aucune feuille de semaine.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<h2 class="sheet-heading">Feuilles du mois</h2>
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead><tr><th>Période</th><th>Titre</th><th>Fichier</th><th>État</th><th></th></tr></thead>
+    <tbody>
+      @for (row of months(); track row.id) {
+        <tr>
+          <td>{{ formatSheetPeriod(row.kind, row.periodStart) }}</td>
+          <td>{{ row.title }}</td>
+          <td>{{ row.originalName }}<br /><span class="meta">{{ formatSize(row.size) }}</span></td>
+          <td>{{ row.published ? 'Publiée' : 'Brouillon' }}</td>
+          <td class="row-actions">
+            <button class="btn btn-line-dark btn-small" type="button" (click)="download(row)">Télécharger</button>
+            <button appDelete type="button" [label]="'Supprimer ' + row.title" (click)="remove(row)"></button>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="5">Aucune feuille du mois.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<ng-template #editor>
+  <div class="admin-modal">
+    <div class="admin-modal-head">
+      <h1 id="admin-modal-title">Déposer une feuille</h1>
+      <button appClose type="button" (click)="close()"></button>
+    </div>
+    <form class="form" method="post" novalidate (submit)="$event.preventDefault(); save()">
+      <label>
+        Type
+        <select [formField]="form.kind">
+          <option value="week">Feuille de semaine</option>
+          <option value="month">Feuille du mois</option>
+        </select>
+        <app-field-error [field]="form.kind" />
+      </label>
+      <label>Titre <input [formField]="form.title" /><app-field-error [field]="form.title" /></label>
+      <label>
+        Date dans la période
+        <input type="date" [formField]="form.periodStart" />
+        <app-field-error [field]="form.periodStart" pattern="Indiquez une date." />
+      </label>
+      <p class="note">Une semaine est ramenée à son lundi, un mois à son premier jour.</p>
+      @if (material(); as material) {
+        <p class="note">
+          La création automatique pourra reprendre {{ material.masses.length }} horaires de messe,
+          {{ material.ministries.length }} textes de vie paroissiale,
+          {{ material.events.length }} dates d’agenda
+          et {{ material.articles.length }} actualités de cette période.
+          Le PDF déposé reste celui qui est publié.
+        </p>
+      }
+      <label>
+        Fichier PDF
+        <input #fileInput type="file" accept="application/pdf,.pdf" (change)="pickFile($event)" />
+        @if (fileError()) { <p class="field-error">{{ fileError() }}</p> }
+      </label>
+      <label class="check"><input type="checkbox" [formField]="form.published" /> Publier sur le site</label>
+      @if (error()) { <p class="note">{{ error() }}</p> }
+      <div class="actions">
+        <button class="btn btn-navy" type="submit" [disabled]="saving()">{{ saving() ? 'Envoi…' : 'Déposer' }}</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

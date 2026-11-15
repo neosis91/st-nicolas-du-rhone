@@ -1,0 +1,10 @@
+<div class="toolbar">
+  <h1>Agenda</h1>
+  <a class="btn btn-navy" routerLink="/admin/agenda/nouveau">Nouvelle date</a>
+</div>
+<app-agenda-calendar
+  [events]="events()"
+  (selectEvent)="openEvent($event)"
+  (createOn)="createOn($event)"
+/>
+<router-outlet />

@@ -1,0 +1,51 @@
+<div class="admin-shell">
+  <div class="admin-side">
+    <div class="admin-bar">
+      <a class="admin-logo" routerLink="/" (click)="closeMenu()">
+        <img ngSrc="/logo-clair.png" alt="Paroisse Saint-Nicolas du Rhône" width="180" height="82" priority disableOptimizedSrcset />
+      </a>
+      <div class="admin-bar-actions">
+        <a class="avatar" routerLink="/admin/profil" [attr.aria-label]="'Profil de ' + (auth.name() ?? '')" (click)="closeMenu()">{{ initials(auth.name()) }}</a>
+        <button
+          class="admin-menu-toggle"
+          type="button"
+          aria-label="Menu"
+          [attr.aria-expanded]="menuOpen()"
+          aria-controls="admin-nav"
+          (click)="toggleMenu()"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <nav id="admin-nav" class="admin-nav" [class.is-open]="menuOpen()" aria-label="Administration">
+    <a class="admin-who" routerLink="/admin/profil" routerLinkActive="is-current" (click)="closeMenu()">
+      <span class="avatar" aria-hidden="true">{{ initials(auth.name()) }}</span>
+      <span class="nav-label">{{ auth.name() }}</span>
+    </a>
+    <a routerLink="/admin" routerLinkActive="is-current" [routerLinkActiveOptions]="{ exact: true }">Tableau de bord</a>
+    <a routerLink="/admin/messages" routerLinkActive="is-current">Messages</a>
+    <p class="nav-label">Contenu</p>
+    <a routerLink="/admin/actualites" routerLinkActive="is-current">Actualités</a>
+    <a routerLink="/admin/agenda" routerLinkActive="is-current">Agenda</a>
+    <a routerLink="/admin/messes" routerLinkActive="is-current">Horaires des messes</a>
+    <a routerLink="/admin/feuilles" routerLinkActive="is-current">Feuilles</a>
+    <a routerLink="/admin/lieux" routerLinkActive="is-current">Communes</a>
+    <a routerLink="/admin/equipe" routerLinkActive="is-current">Équipe</a>
+    <a routerLink="/admin/sacrements" routerLinkActive="is-current">Sacrements</a>
+    <a routerLink="/admin/services" routerLinkActive="is-current">Vie paroissiale</a>
+    <a routerLink="/admin/parametres" routerLinkActive="is-current">Coordonnées</a>
+    <a routerLink="/admin/utilisateurs" routerLinkActive="is-current">Utilisateurs</a>
+    <p class="nav-label">Site</p>
+    <button appTheme type="button"></button>
+    <a routerLink="/">Voir le site</a>
+    <button type="button" (click)="logout()">Se déconnecter</button>
+    </nav>
+  </div>
+  <div class="admin-main">
+    <router-outlet />
+  </div>
+  <app-toast-host />
+</div>

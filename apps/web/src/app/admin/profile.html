@@ -1,0 +1,61 @@
+<p class="crumbs"><a routerLink="/admin/utilisateurs">Utilisateurs</a> <span aria-hidden="true">/</span> {{ title() }}</p>
+<h1>{{ title() }}</h1>
+@if (isSelf()) {
+  <p style="color: var(--muted); margin: 0 0 1.2rem">
+    Vos informations de compte, le mot de passe, la double authentification et les clés d’accès.
+  </p>
+} @else if (user()) {
+  <p style="color: var(--muted); margin: 0 0 1.2rem">
+    Prénom, nom et adresse du compte. Le mot de passe et la sécurité se règlent depuis le profil de la personne connectée.
+  </p>
+}
+
+@if (error() && !user()) { <p class="note">{{ error() }}</p> }
+
+@if (user(); as account) {
+  <section class="panel profile-section">
+    <h2>Identité</h2>
+    <form class="form" method="post" novalidate (submit)="saveIdentity($event)">
+      <label>Prénom <input [formField]="form.firstName" autocomplete="given-name" /><app-field-error [field]="form.firstName" /></label>
+      <label>Nom <input [formField]="form.lastName" autocomplete="family-name" /><app-field-error [field]="form.lastName" /></label>
+      <label>Adresse <input type="email" [formField]="form.email" autocomplete="username" /><app-field-error [field]="form.email" /></label>
+      @if (error()) { <p class="note">{{ error() }}</p> }
+      <button class="btn btn-navy" type="submit">Enregistrer</button>
+    </form>
+  </section>
+
+  @if (isSelf()) {
+    <section class="panel profile-section">
+      <h2>Mot de passe</h2>
+      @if (passwordLogin()) {
+        <form class="form" method="post" novalidate (submit)="changePassword($event)">
+          <label>Mot de passe actuel <input type="password" [formField]="passwordForm.currentPassword" autocomplete="current-password" /><app-field-error [field]="passwordForm.currentPassword" /></label>
+          <label>
+            Nouveau mot de passe
+            <input
+              type="password"
+              [formField]="passwordForm.nextPassword"
+              autocomplete="new-password"
+              [attr.passwordrules]="passwordRules"
+            />
+            <app-field-error [field]="passwordForm.nextPassword" />
+          </label>
+          @if (passwordError()) { <p class="note">{{ passwordError() }}</p> }
+          <button class="btn btn-line-dark" type="submit">Changer le mot de passe</button>
+        </form>
+      } @else {
+        <p style="color: var(--muted)">
+          La connexion par mot de passe est désactivée. Utilisez une clé d’accès, ou réactivez le mot de passe dans la section ci-dessous.
+        </p>
+      }
+    </section>
+
+    <section class="panel profile-section">
+      <app-mfa-panel />
+    </section>
+
+    <section class="panel profile-section">
+      <app-passkey-panel (securityChange)="onSecurityChange()" />
+    </section>
+  }
+}

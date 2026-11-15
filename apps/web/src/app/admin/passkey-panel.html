@@ -1,0 +1,40 @@
+<h2 class="sheet-heading">Clés d’accès</h2>
+<p style="color: var(--muted)">
+  Une clé d’accès se range dans Bitwarden, 1Password, le trousseau Apple ou Windows Hello. Elle peut remplacer le mot de passe et le code à 6 chiffres.
+</p>
+@if (ready() && passkeys().length) {
+  <ul class="passkey-list">
+    @for (passkey of passkeys(); track passkey.id) {
+      <li>
+        <span>
+          <strong>{{ passkey.name }}</strong>
+          <small>{{ when(passkey.createdAt) }}@if (passkey.backedUp) { · synchronisée }</small>
+        </span>
+        <button appDelete type="button" label="Retirer cette clé d’accès" (click)="remove(passkey)"></button>
+      </li>
+    }
+  </ul>
+}
+@if (offerOnly()) {
+  <div class="note passkey-offer">
+    <p>Votre clé d’accès est prête. Souhaitez-vous vous connecter uniquement avec elle ?</p>
+    <p>Cela désactive la connexion par mot de passe et la double authentification.</p>
+    <div class="actions">
+      <button class="btn btn-navy" type="button" [disabled]="busy()" (click)="preferOnly()">Oui, uniquement la clé</button>
+      <button class="btn btn-line-dark" type="button" [disabled]="busy()" (click)="dismissOffer()">Plus tard</button>
+    </div>
+  </div>
+} @else if (ready() && passkeys().length && !passwordLogin()) {
+  <p style="color: var(--muted)">Connexion par clé d’accès uniquement.</p>
+  <button class="btn btn-line-dark" type="button" [disabled]="busy()" (click)="allowPassword()">Réactiver le mot de passe</button>
+} @else if (ready() && passkeys().length && passwordLogin()) {
+  <p style="color: var(--muted)">
+    Le mot de passe reste possible. Vous pouvez
+    <button class="linkish" type="button" [disabled]="busy()" (click)="preferOnly()">passer à la clé seule</button>.
+  </p>
+}
+<form class="form" method="post" (submit)="add(); $event.preventDefault()">
+  <label>Nom <input [formField]="form.name" placeholder="Bitwarden, ordinateur…" autocomplete="off" /></label>
+  @if (error()) { <p class="note">{{ error() }}</p> }
+  <button class="btn btn-line-dark" type="submit" [disabled]="busy()">{{ busy() ? 'En attente…' : 'Ajouter une clé d’accès' }}</button>
+</form>

@@ -1,0 +1,27 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> Vie paroissiale</p>
+    <p class="eyebrow">Annoncer, célébrer, servir</p>
+    <h1>La vie de la paroisse</h1>
+    <p class="lede">{{ settings.lifeIntro }}</p>
+  </header>
+  <div class="sacraments" style="padding-bottom: 3rem">
+    @for (item of ministries; track item.slug) {
+      <article class="sacrament" [id]="item.slug">
+        <h2>{{ item.title }}</h2>
+        @for (paragraph of item.paragraphs ?? []; track paragraph) {
+          <p [style.margin-top]="$first ? null : '0.6rem'">{{ paragraph }}</p>
+        }
+        @if (item.linkLabel && item.linkUrl) {
+          <p style="margin-top: 0.6rem">
+            @if (item.linkUrl.startsWith('/')) {
+              <a [routerLink]="link(item.linkUrl).path" [fragment]="link(item.linkUrl).fragment">{{ item.linkLabel }}</a>
+            } @else {
+              <a [href]="item.linkUrl">{{ item.linkLabel }}</a>
+            }
+          </p>
+        }
+      </article>
+    }
+  </div>
+</div>

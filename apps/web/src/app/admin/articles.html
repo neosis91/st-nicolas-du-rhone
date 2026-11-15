@@ -1,0 +1,22 @@
+<div class="toolbar">
+  <h1>Actualités</h1>
+  <a class="btn btn-navy" routerLink="/admin/actualites/nouveau">Nouvelle actualité</a>
+</div>
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr><th>Date</th><th>Titre</th><th>État</th><th></th></tr>
+    </thead>
+    <tbody>
+      @for (article of articles(); track article.id) {
+        <tr>
+          <td>{{ formatDate(article.publishedAt) }}</td>
+          <td>{{ article.title }}</td>
+          <td>{{ article.published ? 'Publié' : 'Brouillon' }}</td>
+          <td class="row-actions"><button appEdit type="button" [routerLink]="['/admin/actualites', article.id]" [label]="'Modifier ' + article.title"></button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<router-outlet />

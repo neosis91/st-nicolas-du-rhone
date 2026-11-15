@@ -1,0 +1,25 @@
+<div class="admin-modal">
+  <div class="admin-modal-head">
+    <h1 id="admin-modal-title">{{ editingId() ? 'Modifier la date' : 'Nouvelle date' }}</h1>
+    <button appClose type="button" (click)="close()"></button>
+  </div>
+  <form class="form" method="post" novalidate (submit)="$event.preventDefault(); save()">
+    <label>Titre <input [formField]="form.title" /><app-field-error [field]="form.title" /></label>
+    <label>
+      Type
+      <select [formField]="form.kind">
+        @for (kind of kinds; track kind) { <option [value]="kind">{{ kind }}</option> }
+      </select>
+      <app-field-error [field]="form.kind" />
+    </label>
+    <label>Date <input type="datetime-local" [formField]="form.startsAt" /><app-field-error [field]="form.startsAt" /></label>
+    <label>Lieu <input [formField]="form.location" /><app-field-error [field]="form.location" /></label>
+    <label>Détail <textarea [formField]="form.detail"></textarea><app-field-error [field]="form.detail" /></label>
+    <label class="check"><input type="checkbox" [formField]="form.published" /> Afficher sur le site</label>
+    @if (error()) { <p class="note">{{ error() }}</p> }
+    <div class="actions">
+      <button class="btn btn-navy" type="submit">Enregistrer</button>
+      @if (editingId()) { <button appDelete type="button" (click)="remove()"></button> }
+    </div>
+  </form>
+</div>

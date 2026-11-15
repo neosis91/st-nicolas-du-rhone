@@ -1,0 +1,32 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> Agenda</p>
+    <p class="eyebrow">À venir</p>
+    <h1>L’agenda</h1>
+    <p class="lede">
+      Les grandes dates de l’année liturgique, et la permanence du secrétariat.
+      L’heure et l’église des messes de fête sont confirmées par téléphone.
+    </p>
+  </header>
+  <article class="panel" style="margin-bottom: 1rem">
+    <p class="meta">Chaque semaine</p>
+    <h2 style="font-size: 1.7rem; color: var(--heading); margin: 0.3rem 0">Accueil paroissial</h2>
+    <p>{{ settings.hours }}</p>
+    <p style="color: var(--muted)">{{ settings.street }}, {{ settings.postalCode }} {{ settings.city }}</p>
+    <p style="margin-top: 0.4rem">{{ settings.welcomeDetail }}</p>
+  </article>
+  <div class="event-list" style="padding-bottom: 3rem">
+    @for (item of upcoming; track item.id) {
+      <article class="event">
+        <p class="meta">{{ formatDate(item.startsAt) }} · {{ item.kind }}</p>
+        <h2 style="font-size: 1.45rem; color: var(--heading); margin-top: 0.25rem">{{ item.title }}</h2>
+        <p style="margin-top: 0.35rem">{{ item.detail }}</p>
+        <p style="color: var(--muted); margin-top: 0.25rem">{{ item.location }}</p>
+      </article>
+    } @empty {
+      <p class="note">
+        Les prochaines dates seront affichées ici. En attendant, le secrétariat répond au {{ settings.phone }}.
+      </p>
+    }
+  </div>
+</div>

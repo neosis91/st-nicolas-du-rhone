@@ -1,0 +1,17 @@
+<div class="admin-modal">
+  <div class="admin-modal-head">
+    <h1 id="admin-modal-title">{{ editingId() ? 'Modifier' : 'Nouveau sacrement' }}</h1>
+    <button appClose type="button" (click)="close()"></button>
+  </div>
+  <form class="form" method="post" novalidate (submit)="$event.preventDefault(); save()">
+    <label>Titre <input [formField]="form.title" (blur)="fillSlug()" /><app-field-error [field]="form.title" /></label>
+    <label>Identifiant <input [formField]="form.slug" /><app-field-error [field]="form.slug" pattern="Utilisez des minuscules, des chiffres et des tirets." /></label>
+    <label>Texte <textarea [formField]="form.text"></textarea><app-field-error [field]="form.text" /></label>
+    <label>Étapes, une par ligne <textarea [formField]="form.stepsText"></textarea><app-field-error [field]="form.stepsText" /></label>
+    @if (error()) { <p class="note">{{ error() }}</p> }
+    <div class="actions">
+      <button class="btn btn-navy" type="submit">Enregistrer</button>
+      @if (editingId()) { <button appDelete type="button" (click)="remove()"></button> }
+    </div>
+  </form>
+</div>

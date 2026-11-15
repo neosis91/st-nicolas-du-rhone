@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Paroisse Saint-Nicolas du Rhône</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#005088">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('stnicolas.theme');
+        if (theme !== 'dark' && theme !== 'light') return;
+        document.documentElement.dataset.theme = theme;
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta && theme === 'dark') meta.setAttribute('content', '#07141f');
+      } catch (e) {}
+    })();
+  </script>
+  <meta name="description" content="Paroisse catholique Saint-Nicolas du Rhône, diocèse de Viviers.">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Paroisse Saint-Nicolas du Rhône">
+  <meta property="og:image" content="https://stnicolasdurhone.fr/og.png">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<div class="toolbar">
+  <h1>Utilisateurs</h1>
+  <button class="btn btn-navy" type="button" (click)="openCreate()">Ajouter un compte</button>
+</div>
+@if (error() && !dialogOpen()) { <p class="note">{{ error() }}</p> }
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead><tr><th>Personne</th><th>Adresse</th><th></th></tr></thead>
+    <tbody>
+      @for (row of rows(); track row.id) {
+        <tr>
+          <td>
+            <a class="user-link" [routerLink]="['/admin/utilisateurs', row.id]">{{ row.firstName }} {{ row.lastName }}</a>
+            @if (row.id === auth.userId()) { <span class="you">Vous</span> }
+          </td>
+          <td>{{ row.email }}</td>
+          <td class="row-actions">
+            <button appEdit type="button" [label]="'Modifier ' + row.firstName + ' ' + row.lastName" (click)="edit(row)"></button>
+            <button
+              appDelete
+              type="button"
+              [label]="'Supprimer ' + row.firstName + ' ' + row.lastName"
+              (click)="remove(row)"
+              [disabled]="row.id === auth.userId() || rows().length <= 1"
+            ></button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<ng-template #editor>
+  <div class="admin-modal">
+    <div class="admin-modal-head">
+      <h1 id="admin-modal-title">{{ editingId() ? 'Modifier un compte' : 'Ajouter un compte' }}</h1>
+      <button appClose type="button" (click)="close()"></button>
+    </div>
+    <form class="form" method="post" novalidate (submit)="save($event)">
+      <label>Prénom <input [formField]="form.firstName" autocomplete="given-name" /><app-field-error [field]="form.firstName" /></label>
+      <label>Nom <input [formField]="form.lastName" autocomplete="family-name" /><app-field-error [field]="form.lastName" /></label>
+      <label>Adresse <input type="email" [formField]="form.email" autocomplete="off" /><app-field-error [field]="form.email" /></label>
+      @if (!editingId()) {
+        <label>
+          Mot de passe
+          <input
+            type="password"
+            [formField]="form.password"
+            autocomplete="new-password"
+            [attr.passwordrules]="passwordRules"
+            [attr.aria-label]="passwordAriaLabel"
+          />
+          <app-field-error [field]="form.password" />
+        </label>
+      }
+      @if (error()) { <p class="note">{{ error() }}</p> }
+      <div class="actions">
+        <button class="btn btn-navy" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

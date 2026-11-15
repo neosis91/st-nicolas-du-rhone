@@ -1,0 +1,32 @@
+<div class="login-wrap">
+  <div class="login-card">
+  <a class="login-logo" routerLink="/">
+    <img class="logo-for-light" ngSrc="/logo.png" alt="Paroisse Saint-Nicolas du Rhône" width="240" height="109" priority disableOptimizedSrcset />
+    <img class="logo-for-dark" ngSrc="/logo-clair.png" alt="" width="240" height="109" disableOptimizedSrcset />
+  </a>
+  <button appTheme type="button"></button>
+  <form class="panel form" method="post" novalidate (submit)="submit($event)">
+    <p class="eyebrow">Administration</p>
+    <h1>Connexion</h1>
+    <p style="color: var(--muted)">Espace réservé au secrétariat de la paroisse.</p>
+    @if (step() === 'password') {
+      <label>Adresse <input type="email" [formField]="form.email" autocomplete="username webauthn" /><app-field-error [field]="form.email" /></label>
+      <label>Mot de passe <input type="password" [formField]="form.password" autocomplete="current-password" /><app-field-error [field]="form.password" /></label>
+    } @else {
+      <p style="color: var(--muted)">Saisissez le code à 6 chiffres de votre application d’authentification, ou un code de secours.</p>
+      <label>Code <input [formField]="codeForm.code" inputmode="numeric" autocomplete="one-time-code" /><app-field-error [field]="codeForm.code" /></label>
+    }
+    @if (error()) { <p class="note">{{ error() }}</p> }
+    <div class="actions">
+      @if (step() === 'code') {
+        <button class="btn btn-line-dark" type="button" (click)="back()">Retour</button>
+      }
+      <button class="btn btn-navy" type="submit" [disabled]="sending()">{{ sending() ? 'Connexion…' : 'Entrer' }}</button>
+      @if (step() === 'password' && passkeySupported()) {
+        <button class="btn btn-line-dark" type="button" [disabled]="sending()" (click)="passkey()">Clé d’accès</button>
+      }
+    </div>
+    <p><a routerLink="/">Retour au site</a></p>
+  </form>
+  </div>
+</div>

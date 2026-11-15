@@ -1,0 +1,18 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> Actualités</p>
+    <p class="eyebrow">La paroisse</p>
+    <h1>Actualités</h1>
+  </header>
+  <div class="stack" style="padding-bottom: 3rem">
+    @for (article of articles; track article.slug) {
+      <a class="card" [routerLink]="['/actualites', article.slug]">
+        <span class="meta">{{ article.category }} · {{ formatDate(article.publishedAt) }}</span>
+        <h2 style="font-size: 1.7rem">{{ article.title }}</h2>
+        <p>{{ article.excerpt }}</p>
+      </a>
+    } @empty {
+      <p class="note">Les prochaines nouvelles de la paroisse seront publiées ici.</p>
+    }
+  </div>
+</div>

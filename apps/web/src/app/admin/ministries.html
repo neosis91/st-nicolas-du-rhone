@@ -1,0 +1,21 @@
+<div class="toolbar">
+  <h1>Vie paroissiale</h1>
+  <a class="btn btn-navy" routerLink="/admin/services/nouveau">Ajouter</a>
+</div>
+@if (error()) { <p class="note">{{ error() }}</p> }
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead><tr><th class="drag-col"><span class="visually-hidden">Ordre</span></th><th>Titre</th><th></th></tr></thead>
+    <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+      @for (row of rows(); track row.id) {
+        <tr cdkDrag cdkDragLockAxis="y">
+          <td><button appDragHandle type="button" [label]="'Déplacer ' + row.title"></button></td>
+          <td>{{ row.title }}</td>
+          <td class="row-actions"><button appEdit type="button" [routerLink]="['/admin/services', row.id]" [label]="'Modifier ' + row.title"></button></td>
+          <ng-template cdkDragPreview><div class="row-preview">{{ row.title }}</div></ng-template>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<router-outlet />

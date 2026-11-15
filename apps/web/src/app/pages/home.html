@@ -1,0 +1,128 @@
+<div class="wrap-wide">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">{{ settings.diocese }}</p>
+      <h1>{{ settings.shortName }}</h1>
+      <p class="lede">{{ settings.heroLede }}</p>
+      <div class="actions">
+        <a class="btn btn-navy" routerLink="/celebrer">Horaires des messes</a>
+        <a class="btn btn-line-dark" routerLink="/contact">Écrire au secrétariat</a>
+      </div>
+    </div>
+    <app-river-scene />
+  </section>
+
+  <nav class="quick" aria-label="Accès rapides">
+    <a routerLink="/celebrer"><small>Cette semaine</small><strong>Messes</strong></a>
+    <a routerLink="/celebrer/sacrements"><small>Baptême, mariage</small><strong>Sacrements</strong></a>
+    <a routerLink="/vivre"><small>Enfants et adultes</small><strong>Catéchèse</strong></a>
+    <a routerLink="/agenda"><small>Dates à venir</small><strong>Agenda</strong></a>
+  </nav>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Actualités</h2>
+      <a routerLink="/actualites">Toutes les actualités</a>
+    </div>
+    <div class="news-grid">
+      @for (article of latest; track article.slug) {
+        <a class="card" [routerLink]="['/actualites', article.slug]">
+          <span class="meta">{{ article.category }} · {{ formatDate(article.publishedAt) }}</span>
+          <h3>{{ article.title }}</h3>
+          <p>{{ article.excerpt }}</p>
+        </a>
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="split">
+      <article class="panel">
+        <p class="eyebrow">Célébrer</p>
+        <h2>Le rythme des messes</h2>
+        <p style="margin-top: 0.7rem; color: var(--muted)">
+          Le dimanche à 10h30 à l’église Saint-Vincent de La Voulte est le rendez-vous le plus régulier.
+          Les autres clochers tournent : un appel au secrétariat confirme le lieu.
+        </p>
+        <div class="mass-list">
+          @for (mass of sunday; track mass.id) {
+            <div class="mass">
+              <div>
+                <div class="when">{{ mass.dayLabel }}</div>
+                <div class="time">{{ mass.time }}</div>
+              </div>
+              <div class="where">{{ mass.location }}</div>
+            </div>
+          }
+        </div>
+        <div class="actions">
+          <a class="btn btn-line-dark" routerLink="/celebrer">Voir les horaires</a>
+          <a class="btn btn-line-dark" routerLink="/feuilles">Feuilles</a>
+        </div>
+      </article>
+      <article class="panel">
+        <p class="eyebrow">Agenda</p>
+        <h2>Prochaines dates</h2>
+        <div class="event-list">
+          @for (item of upcoming; track item.id) {
+            <div class="event">
+              <div class="meta">{{ formatDate(item.startsAt) }} · {{ item.kind }}</div>
+              <strong>{{ item.title }}</strong>
+              <p style="color: var(--muted); margin-top: 0.25rem">{{ item.location }}</p>
+            </div>
+          }
+        </div>
+        <div class="actions">
+          <a class="btn btn-line-dark" routerLink="/agenda">Tout l’agenda</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Les dix communes</h2>
+      <a routerLink="/paroisse" fragment="communes">La paroisse</a>
+    </div>
+    <div class="towns">
+      @for (place of home.places; track place.id) {
+        <div class="town">
+          <strong>{{ place.town }}</strong>
+          <span>{{ place.church || 'Commune de la paroisse' }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="paths">
+      <a class="path" routerLink="/celebrer/sacrements">
+        <span class="eyebrow">Demander</span>
+        <h3>Un sacrement</h3>
+        <p>Baptême, mariage, première communion, confirmation, sacrement des malades ou funérailles.</p>
+      </a>
+      <a class="path" routerLink="/vivre">
+        <span class="eyebrow">Grandir</span>
+        <h3>Dans la foi</h3>
+        <p>Catéchèse des enfants, catéchuménat des adultes, et équipes au service de la paroisse.</p>
+      </a>
+      <a class="path" routerLink="/vivre" fragment="servir">
+        <span class="eyebrow">Servir</span>
+        <h3>Avec d’autres</h3>
+        <p>Secours catholique, visite des malades, accueil : la paroisse a besoin de bonnes volontés.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="donate">
+    <div>
+      <p class="eyebrow">Denier de l’Église</p>
+      <h2>Faire vivre la paroisse</h2>
+      <p>
+        Le denier permet de rémunérer les prêtres et de soutenir la mission.
+        La quête du dimanche, elle, fait vivre la paroisse au quotidien.
+      </p>
+    </div>
+    <a class="btn btn-gold" routerLink="/don">Je donne</a>
+  </section>
+</div>

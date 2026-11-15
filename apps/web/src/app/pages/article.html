@@ -1,0 +1,29 @@
+<div class="wrap">
+  @if (article) {
+    <article class="article">
+      <header class="page-hero">
+        <p class="crumbs">
+          <a routerLink="/">Accueil</a> <span aria-hidden="true">/</span>
+          <a routerLink="/actualites">Actualités</a>
+        </p>
+        <p class="meta">{{ article.category }} · <time [attr.datetime]="article.publishedAt">{{ formatDate(article.publishedAt) }}</time></p>
+        <h1>{{ article.title }}</h1>
+      </header>
+      <div class="stack">
+        @for (paragraph of article.paragraphs; track paragraph) { <p>{{ paragraph }}</p> }
+      </div>
+      @if (article.sourceLabel && article.sourceUrl) {
+        <p class="source">Source : <a [href]="article.sourceUrl">{{ article.sourceLabel }}</a></p>
+      }
+    </article>
+  } @else {
+    <header class="page-hero">
+      <p class="eyebrow">Introuvable</p>
+      <h1>Cette actualité n’existe pas</h1>
+      <p class="lede">Elle a peut-être été retirée.</p>
+      <div class="actions">
+        <a class="btn btn-navy" routerLink="/actualites">Toutes les actualités</a>
+      </div>
+    </header>
+  }
+</div>

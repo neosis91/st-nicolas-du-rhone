@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  firstName      String
+  lastName       String
+  passwordLogin  Boolean  @default(true)
+  mfaEnabled     Boolean  @default(false)
+  mfaSecret      String?
+  mfaRecovery    Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  passkeys       Passkey[]
+}
+
+model Passkey {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialId String   @unique
+  publicKey    Bytes
+  counter      Int      @default(0)
+  transports   String   @default("")
+  name         String
+  backedUp     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model Settings {
+  id                  Int      @id @default(1)
+  name                String
+  shortName           String
+  domain              String
+  siteUrl             String
+  diocese             String
+  dioceseUrl          String
+  parishOnDioceseUrl  String
+  donationsUrl        String
+  bequestsUrl         String
+  readingsUrl         String
+  sector              String
+  bishop              String
+  email               String
+  phone               String
+  street              String
+  postalCode          String
+  city                String
+  hours               String
+  mapUrl              String
+  presbyteryStreet    String
+  heroLede            String
+  aboutText           String
+  teamIntro           String
+  teamCouncils        String
+  massIntro           String
+  sacramentIntro      String
+  lifeIntro           String
+  donateIntro         String
+  welcomeDetail       String
+  publicationDirector String
+  hostNote            String
+  denierEmail         String
+  updatedAt           DateTime @updatedAt
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  category    String
+  body        String
+  sourceLabel String?
+  sourceUrl   String?
+  published   Boolean  @default(true)
+  publishedAt DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  title     String
+  detail    String
+  location  String
+  kind      String
+  startsAt  DateTime
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Place {
+  id        String  @id @default(cuid())
+  town      String
+  kind      String
+  church    String?
+  address   String?
+  note      String
+  sortOrder Int     @default(0)
+}
+
+model Person {
+  id            String  @id @default(cuid())
+  name          String
+  role          String
+  detail        String  @default("")
+  phone         String?
+  email         String?
+  groupName     String
+  showOnContact Boolean @default(false)
+  sortOrder     Int     @default(0)
+}
+
+model MassTime {
+  id        String @id @default(cuid())
+  dayLabel  String
+  time      String
+  location  String
+  note      String @default("")
+  period    String
+  sortOrder Int    @default(0)
+}
+
+model Sacrament {
+  id        String @id @default(cuid())
+  slug      String @unique
+  title     String
+  text      String
+  steps     Json
+  sortOrder Int    @default(0)
+}
+
+model Ministry {
+  id        String  @id @default(cuid())
+  slug      String  @unique
+  title     String
+  body      String
+  linkLabel String?
+  linkUrl   String?
+  sortOrder Int     @default(0)
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  name      String
+  contact   String
+  subject   String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Sheet {
+  id           String   @id @default(cuid())
+  kind         String
+  title        String
+  periodStart  DateTime
+  storedName   String   @unique
+  originalName String
+  mimeType     String
+  size         Int
+  published    Boolean  @default(true)
+  source       String   @default("upload")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

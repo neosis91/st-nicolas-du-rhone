@@ -1,0 +1,67 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> Contact</p>
+    <p class="eyebrow">Accueil paroissial</p>
+    <h1>Écrire ou passer</h1>
+    <p class="lede">
+      Le secrétariat répond {{ settings.hours.toLowerCase() }}.
+      @if (contacts[0]; as cure) {
+        En dehors de ces heures, {{ cure.name }} est joignable
+        @if (cure.phoneHref) { au <a [href]="cure.phoneHref">{{ cure.phone }}</a> }.
+      }
+    </p>
+  </header>
+  <div class="two">
+    <section class="panel">
+      <h2>Envoyer un message</h2>
+      <p style="color: var(--muted); margin: 0.4rem 0 0.8rem">
+        Le message est enregistré pour le secrétariat. Il n’est pas publié sur le site.
+      </p>
+      @if (status() === 'sent') {
+        <p class="note">Votre message est arrivé. Le secrétariat le lira depuis son espace d’administration.</p>
+      }
+      <form class="form" method="post" novalidate (submit)="$event.preventDefault(); submit()">
+        <label>Nom <input [formField]="form.name" autocomplete="name" /><app-field-error [field]="form.name" /></label>
+        <label>Téléphone ou courriel <input [formField]="form.contact" autocomplete="email" /><app-field-error [field]="form.contact" /></label>
+        <label>
+          Sujet
+          <select [formField]="form.subject">
+            @for (subject of subjects; track subject) { <option [value]="subject">{{ subject }}</option> }
+          </select>
+          <app-field-error [field]="form.subject" />
+        </label>
+        <label>Message <textarea [formField]="form.body"></textarea><app-field-error [field]="form.body" /></label>
+        <label class="hp" aria-hidden="true">Société <input [formField]="form.company" tabindex="-1" autocomplete="off" /></label>
+        <button class="btn btn-navy" type="submit" [disabled]="status() === 'sending'">
+          {{ status() === 'sending' ? 'Envoi…' : 'Envoyer' }}
+        </button>
+        @if (status() === 'error') { <p class="note">{{ error() }}</p> }
+      </form>
+    </section>
+    <aside class="stack">
+      <article class="panel">
+        <h2>Secrétariat</h2>
+        <p style="margin-top: 0.6rem">{{ settings.street }}<br />{{ settings.postalCode }} {{ settings.city }}</p>
+        <p style="margin-top: 0.6rem">{{ settings.hours }}</p>
+        <p style="margin-top: 0.6rem">
+          @if (settings.phoneHref) { <a [href]="settings.phoneHref">{{ settings.phone }}</a><br /> }
+          <a [href]="'mailto:' + settings.email">{{ settings.email }}</a>
+        </p>
+        <p style="margin-top: 0.8rem"><a [href]="settings.mapUrl">Voir le plan</a></p>
+      </article>
+      <article class="panel">
+        <h2>Presbytère</h2>
+        <p style="margin-top: 0.6rem">
+          {{ settings.presbyteryStreet }}<br />
+          {{ settings.postalCode }} {{ settings.city }}
+        </p>
+        @for (person of contacts; track person.id) {
+          <p style="margin-top: 0.7rem">
+            {{ person.name }}, {{ person.role.toLowerCase() }}<br />
+            @if (person.phoneHref) { <a [href]="person.phoneHref">{{ person.phone }}</a> }
+          </p>
+        }
+      </article>
+    </aside>
+  </div>
+</div>

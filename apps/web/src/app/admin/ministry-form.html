@@ -1,0 +1,19 @@
+<div class="admin-modal">
+  <div class="admin-modal-head">
+    <h1 id="admin-modal-title">{{ editingId() ? 'Modifier' : 'Nouveau texte' }}</h1>
+    <button appClose type="button" (click)="close()"></button>
+  </div>
+  <form class="form" method="post" novalidate (submit)="$event.preventDefault(); save()">
+    <label>Titre <input [formField]="form.title" (blur)="fillSlug()" /><app-field-error [field]="form.title" /></label>
+    <label>Identifiant <input [formField]="form.slug" /><app-field-error [field]="form.slug" pattern="Utilisez des minuscules, des chiffres et des tirets." /></label>
+    <label>Texte <textarea [formField]="form.body" style="min-height: 14rem"></textarea><app-field-error [field]="form.body" /></label>
+    <p style="color: var(--muted)">Une ligne vide sépare les paragraphes.</p>
+    <label>Intitulé du lien <input [formField]="form.linkLabel" /></label>
+    <label>Adresse du lien <input [formField]="form.linkUrl" placeholder="/celebrer ou https://…" /></label>
+    @if (error()) { <p class="note">{{ error() }}</p> }
+    <div class="actions">
+      <button class="btn btn-navy" type="submit">Enregistrer</button>
+      @if (editingId()) { <button appDelete type="button" (click)="remove()"></button> }
+    </div>
+  </form>
+</div>

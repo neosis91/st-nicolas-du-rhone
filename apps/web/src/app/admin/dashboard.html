@@ -1,0 +1,23 @@
+<h1>Tableau de bord</h1>
+@if (summary(); as summary) {
+  <div class="stats">
+    <a class="stat" routerLink="/admin/actualites"><strong>{{ summary.articles }}</strong> actualités</a>
+    <a class="stat" routerLink="/admin/agenda"><strong>{{ summary.events }}</strong> dates</a>
+    <a class="stat" routerLink="/admin/messages"><strong>{{ summary.unreadMessages }}</strong> messages non lus</a>
+    <a class="stat" routerLink="/admin/feuilles"><strong>{{ summary.sheets }}</strong> feuilles</a>
+  </div>
+  <h2>Derniers messages</h2>
+  <div class="stack" style="margin-top: 0.8rem">
+    @for (message of summary.latestMessages; track message.id) {
+      <article class="panel">
+        <p class="meta">{{ formatDate(message.createdAt) }} · {{ message.subject }}</p>
+        <h3>{{ message.name }}</h3>
+        <p>{{ message.body }}</p>
+      </article>
+    } @empty {
+      <p class="note">Aucun message pour le moment.</p>
+    }
+  </div>
+} @else {
+  <p>Chargement…</p>
+}

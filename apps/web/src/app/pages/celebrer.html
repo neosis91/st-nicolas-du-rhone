@@ -1,0 +1,75 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> Célébrer</p>
+    <p class="eyebrow">Célébrer</p>
+    <h1>Horaires des messes</h1>
+    <p class="lede">{{ settings.massIntro }}</p>
+  </header>
+  <p class="note">
+    Ces horaires décrivent le rythme habituel de la paroisse. Fêtes, vacances et mois particuliers
+    peuvent les déplacer. Appelez le
+    @if (settings.phoneHref) { <a [href]="settings.phoneHref">{{ settings.phone }}</a> }
+    ({{ settings.hours.toLowerCase() }}) ou écrivez à
+    <a [href]="'mailto:' + settings.email">{{ settings.email }}</a>.
+  </p>
+  <section class="anchor-block" style="padding-top: 1.6rem">
+    <h2>Le dimanche et la messe anticipée</h2>
+    <div class="mass-list">
+      @for (mass of celebrer.masses.sunday; track mass.id) {
+        <article class="mass">
+          <div>
+            <div class="when">{{ mass.dayLabel }}</div>
+            <div class="time">{{ mass.time }}</div>
+          </div>
+          <div>
+            <strong>{{ mass.location }}</strong>
+            @if (mass.note) { <div class="where">{{ mass.note }}</div> }
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+  <section class="anchor-block">
+    <h2>En semaine</h2>
+    <div class="mass-list">
+      @for (mass of celebrer.masses.weekday; track mass.id) {
+        <article class="mass">
+          <div>
+            <div class="when">{{ mass.dayLabel }}</div>
+            <div class="time">{{ mass.time }}</div>
+          </div>
+          <div class="where" style="align-self: center">{{ mass.location }}</div>
+        </article>
+      }
+    </div>
+  </section>
+  <section class="anchor-block">
+    <h2>Les églises</h2>
+    <div class="towns pair">
+      @for (place of churches; track place.id) {
+        <article class="town">
+          <strong>{{ place.town }}</strong>
+          <span>{{ place.church }}{{ place.address ? ' · ' + place.address : '' }}</span>
+          <p style="margin-top: 0.35rem">{{ place.note }}</p>
+        </article>
+      }
+    </div>
+  </section>
+  <section class="anchor-block" style="padding-bottom: 3rem">
+    <h2>Préparer la messe</h2>
+    <div class="stack prose">
+      <p>
+        Les lectures du jour sont sur le site de l’<a [href]="settings.readingsUrl">AELF</a>.
+        Une intention de messe, pour un défunt ou pour une action de grâce, se dépose au secrétariat.
+      </p>
+      <p>
+        Vous préparez un baptême, un mariage ou des funérailles ?
+        <a routerLink="/celebrer/sacrements"> Les démarches sont réunies ici.</a>
+      </p>
+      <p>
+        La feuille de semaine et la feuille du mois se téléchargent sur
+        <a routerLink="/feuilles">la page des feuilles</a>.
+      </p>
+    </div>
+  </section>
+</div>

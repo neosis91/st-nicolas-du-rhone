@@ -1,0 +1,32 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> Mentions légales</p>
+    <h1>Mentions légales</h1>
+  </header>
+  <div class="stack prose" style="padding-bottom: 3rem">
+    <h2>Éditeur</h2>
+    <p>
+      {{ settings.name }}<br />
+      {{ settings.street }}<br />
+      {{ settings.postalCode }} {{ settings.city }}<br />
+      {{ settings.phone }}<br />
+      {{ settings.email }}
+    </p>
+    <p>Directeur de la publication : {{ settings.publicationDirector }}.</p>
+    <h2>Hébergement</h2>
+    <p>{{ settings.hostNote }}</p>
+    <h2>Données</h2>
+    <p>
+      Le site public ne dépose pas de cookie publicitaire et ne tient pas de compte visiteur.
+      Le formulaire de contact enregistre le message pour que le secrétariat puisse y répondre.
+      Ces messages ne sont pas affichés sur le site. L’espace d’administration utilise un jeton
+      de connexion conservé dans le navigateur de la personne qui gère le site.
+    </p>
+    <h2>Crédits</h2>
+    <p>
+      Textes de la paroisse. Les informations d’équipe et de communes reprennent la fiche
+      publiée par le <a [href]="settings.parishOnDioceseUrl">{{ settings.diocese }}</a>.
+      Les dessins du site sont originaux.
+    </p>
+  </div>
+</div>

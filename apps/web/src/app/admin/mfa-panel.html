@@ -1,0 +1,38 @@
+<h2 class="sheet-heading">Double authentification</h2>
+@if (ready()) {
+  @if (!passwordLogin()) {
+    <p style="color: var(--muted)">
+      La double authentification n’est pas utilisée : ce compte se connecte uniquement avec une clé d’accès.
+      Réactivez le mot de passe dans la section des clés pour pouvoir l’activer de nouveau.
+    </p>
+  } @else if (enabled()) {
+    <p style="color: var(--muted)">Un code d’application est demandé à chaque connexion, en plus du mot de passe.</p>
+    @if (recovery().length) {
+      <p class="note">Conservez ces codes de secours. Chacun ne fonctionne qu’une fois, à la place du code de l’application.</p>
+      <ul class="recovery-list">
+        @for (code of recovery(); track code) {
+          <li>{{ code }}</li>
+        }
+      </ul>
+    }
+    <form class="form" method="post" novalidate (submit)="$event.preventDefault(); disable()">
+      <label>Mot de passe <input type="password" [formField]="disableForm.password" autocomplete="current-password" /><app-field-error [field]="disableForm.password" /></label>
+      <label>Code actuel <input [formField]="disableForm.code" inputmode="numeric" autocomplete="one-time-code" /><app-field-error [field]="disableForm.code" /></label>
+      @if (error()) { <p class="note">{{ error() }}</p> }
+      <button class="btn btn-line-dark" type="submit">Désactiver</button>
+    </form>
+  } @else {
+    <p style="color: var(--muted)">Ajoutez un code à 6 chiffres, généré par une application comme FreeOTP ou Google Authenticator.</p>
+    @if (!setup()) {
+      <button class="btn btn-line-dark" type="button" (click)="prepare()">Activer</button>
+    } @else {
+      <img class="mfa-qr" [src]="setup()!.qr" alt="Code à scanner pour l’authentification" width="220" height="220" />
+      <p style="color: var(--muted)">Si le scan échoue, saisissez cette clé dans l’application : <strong>{{ setup()!.secret }}</strong></p>
+      <form class="form" method="post" novalidate (submit)="$event.preventDefault(); enable()">
+        <label>Code affiché par l’application <input [formField]="codeForm.code" inputmode="numeric" autocomplete="one-time-code" /><app-field-error [field]="codeForm.code" /></label>
+        <button class="btn btn-navy" type="submit">Confirmer</button>
+      </form>
+    }
+    @if (error()) { <p class="note">{{ error() }}</p> }
+  }
+}

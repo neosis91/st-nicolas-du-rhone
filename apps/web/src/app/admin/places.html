@@ -1,0 +1,51 @@
+<div class="toolbar">
+  <h1>Communes</h1>
+  <button class="btn btn-navy" type="button" (click)="openCreate()">Ajouter une commune</button>
+</div>
+@if (error() && !dialogOpen()) { <p class="note">{{ error() }}</p> }
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead><tr><th class="drag-col"><span class="visually-hidden">Ordre</span></th><th>Commune</th><th>Église</th><th></th></tr></thead>
+    <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+      @for (row of rows(); track row.id) {
+        <tr cdkDrag cdkDragLockAxis="y">
+          <td><button appDragHandle type="button" [label]="'Déplacer ' + row.town"></button></td>
+          <td>{{ row.town }}<br /><span class="meta">{{ row.kind === 'fleuve' ? 'Rhône' : 'Coteaux' }}</span></td>
+          <td>{{ row.church || '—' }}</td>
+          <td class="row-actions">
+            <button appEdit type="button" [label]="'Modifier ' + row.town" (click)="edit(row)"></button>
+            <button appDelete type="button" [label]="'Supprimer ' + row.town" (click)="remove(row)"></button>
+          </td>
+          <ng-template cdkDragPreview><div class="row-preview">{{ row.town }}</div></ng-template>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<ng-template #editor>
+  <div class="admin-modal">
+    <div class="admin-modal-head">
+      <h1 id="admin-modal-title">{{ editingId() ? 'Modifier une commune' : 'Ajouter une commune' }}</h1>
+      <button appClose type="button" (click)="close()"></button>
+    </div>
+    <form class="form" method="post" novalidate (submit)="$event.preventDefault(); save()">
+      <label>Commune <input [formField]="form.town" /><app-field-error [field]="form.town" /></label>
+      <label>
+        Situation
+        <select [formField]="form.kind">
+          <option value="fleuve">Au fil du Rhône</option>
+          <option value="coteaux">Dans les coteaux</option>
+        </select>
+        <app-field-error [field]="form.kind" />
+      </label>
+      <label>Église <input [formField]="form.church" /><app-field-error [field]="form.church" /></label>
+      <label>Adresse <input [formField]="form.address" /><app-field-error [field]="form.address" /></label>
+      <label>Note <textarea [formField]="form.note"></textarea><app-field-error [field]="form.note" /></label>
+      @if (error()) { <p class="note">{{ error() }}</p> }
+      <div class="actions">
+        <button class="btn btn-navy" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

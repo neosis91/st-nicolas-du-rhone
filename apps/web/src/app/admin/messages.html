@@ -1,0 +1,22 @@
+<h1>Messages</h1>
+@if (error()) { <p class="note">{{ error() }}</p> }
+<div class="stack">
+  @for (message of messages(); track message.id) {
+    <article class="panel">
+      <button class="btn btn-line-dark" type="button" (click)="toggle(message.id)" style="width: 100%; justify-content: space-between">
+        <span [class.unread]="!message.read">{{ message.name }} — {{ message.subject }}</span>
+        <span class="meta">{{ formatDate(message.createdAt) }}{{ message.read ? '' : ' · non lu' }}</span>
+      </button>
+      @if (openId() === message.id) {
+        <p style="margin-top: 0.8rem">Retour : {{ message.contact }}</p>
+        <p class="pre" style="margin-top: 0.6rem">{{ message.body }}</p>
+        <div class="actions">
+          @if (!message.read) { <button class="btn btn-navy" type="button" (click)="markRead(message)">Marquer comme lu</button> }
+          <button appDelete type="button" [label]="'Supprimer le message de ' + message.name" (click)="remove(message)"></button>
+        </div>
+      }
+    </article>
+  } @empty {
+    <p class="note">Aucun message reçu.</p>
+  }
+</div>

@@ -1,0 +1,16 @@
+<h1>Coordonnées et textes</h1>
+<form class="form" method="post" novalidate (submit)="$event.preventDefault(); save()">
+  @for (field of fields; track field.key) {
+    <label>
+      {{ field.label }}
+      @if (field.area) {
+        <textarea [formField]="form[field.key]"></textarea>
+      } @else {
+        <input [formField]="form[field.key]" />
+      }
+      <app-field-error [field]="form[field.key]" />
+    </label>
+  }
+  @if (error()) { <p class="note">{{ error() }}</p> }
+  <button class="btn btn-navy" type="submit">Enregistrer</button>
+</form>

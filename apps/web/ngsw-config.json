@@ -1,0 +1,49 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.png",
+          "/apple-touch-icon.png",
+          "/logo.png",
+          "/logo-clair.png",
+          "/og.png",
+          "/manifest.webmanifest",
+          "/index.html",
+          "/*.css",
+          "/*.js",
+          "/fonts/**",
+          "/icons/**"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "parish-api",
+      "urls": [
+        "/api/settings",
+        "/api/articles",
+        "/api/articles/**",
+        "/api/events",
+        "/api/places",
+        "/api/masses",
+        "/api/people",
+        "/api/sacraments",
+        "/api/ministries",
+        "/api/sheets"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 40,
+        "maxAge": "1h",
+        "timeout": "4s"
+      }
+    }
+  ],
+  "navigationUrls": ["!/**"]
+}

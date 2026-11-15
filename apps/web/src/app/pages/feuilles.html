@@ -1,0 +1,47 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> Feuilles</p>
+    <p class="eyebrow">Célébrer</p>
+    <h1>Feuilles de semaine et du mois</h1>
+    <p class="lede">
+      Les feuilles préparées par la paroisse : horaires, intentions et nouvelles de la communauté.
+      Elles se téléchargent au format PDF.
+    </p>
+  </header>
+
+  <section class="anchor-block" style="padding-top: 0.4rem">
+    <h2>Feuille de semaine</h2>
+    <div class="sheet-list">
+      @for (sheet of weeks; track sheet.id) {
+        <article class="panel sheet-row">
+          <div>
+            <p class="meta">{{ formatSheetPeriod(sheet.kind, sheet.periodStart) }}</p>
+            <h3>{{ sheet.title }}</h3>
+            <p class="meta">{{ formatSize(sheet.size) }}</p>
+          </div>
+          <a class="btn btn-navy" [href]="fileUrl(sheet)">Télécharger</a>
+        </article>
+      } @empty {
+        <p class="note">La feuille de semaine n’est pas encore en ligne.</p>
+      }
+    </div>
+  </section>
+
+  <section class="anchor-block" style="padding-bottom: 3rem">
+    <h2>Feuille du mois</h2>
+    <div class="sheet-list">
+      @for (sheet of months; track sheet.id) {
+        <article class="panel sheet-row">
+          <div>
+            <p class="meta">{{ formatSheetPeriod(sheet.kind, sheet.periodStart) }}</p>
+            <h3>{{ sheet.title }}</h3>
+            <p class="meta">{{ formatSize(sheet.size) }}</p>
+          </div>
+          <a class="btn btn-navy" [href]="fileUrl(sheet)">Télécharger</a>
+        </article>
+      } @empty {
+        <p class="note">La feuille du mois n’est pas encore en ligne.</p>
+      }
+    </div>
+  </section>
+</div>

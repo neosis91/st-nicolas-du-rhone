@@ -1,0 +1,31 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs">
+      <a routerLink="/">Accueil</a> <span aria-hidden="true">/</span>
+      <a routerLink="/celebrer">Célébrer</a> <span aria-hidden="true">/</span> Sacrements
+    </p>
+    <p class="eyebrow">Demander un sacrement</p>
+    <h1>Baptême, mariage, funérailles</h1>
+    <p class="lede">{{ settings.sacramentIntro }} Permanence : {{ settings.hours.toLowerCase() }}.</p>
+  </header>
+  <div class="sacraments" style="padding-bottom: 3rem">
+    @for (item of sacraments; track item.slug) {
+      <article class="sacrament anchor-block" [id]="item.slug">
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.text }}</p>
+        <ol class="steps">
+          @for (step of item.steps; track step) { <li>{{ step }}</li> }
+        </ol>
+      </article>
+    }
+    <p class="note">
+      Secrétariat :
+      @if (settings.phoneHref) { <a [href]="settings.phoneHref">{{ settings.phone }}</a> }
+      · <a [href]="'mailto:' + settings.email">{{ settings.email }}</a>
+      · {{ settings.street }}, {{ settings.postalCode }} {{ settings.city }}.
+      @for (person of contacts; track person.id) {
+        {{ person.role }} : <a [href]="person.phoneHref">{{ person.phone }}</a>.
+      }
+    </p>
+  </div>
+</div>

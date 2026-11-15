@@ -1,0 +1,41 @@
+<div class="wrap">
+  <header class="page-hero">
+    <p class="crumbs"><a routerLink="/">Accueil</a> <span aria-hidden="true">/</span> Je donne</p>
+    <p class="eyebrow">Denier de l’Église</p>
+    <h1>Donner à la paroisse</h1>
+    <p class="lede">{{ settings.donateIntro }}</p>
+  </header>
+  <div class="paths" style="padding-bottom: 1.2rem">
+    <article class="path">
+      <span class="eyebrow">Chaque dimanche</span>
+      <h3>La quête</h3>
+      <p>Elle est remise à l’offertoire. C’est la ressource ordinaire de la paroisse, celle qui règle les factures de la semaine.</p>
+    </article>
+    <article class="path">
+      <span class="eyebrow">Une fois dans l’année</span>
+      <h3>Le denier</h3>
+      <p>Il est demandé à chaque baptisé. On peut le donner au secrétariat ou suivre la campagne du diocèse.</p>
+    </article>
+    <article class="path">
+      <span class="eyebrow">Transmettre</span>
+      <h3>Don et legs</h3>
+      <p>Un don plus important, une donation ou un legs se prépare avec le diocèse, qui accompagne les familles et délivre les reçus.</p>
+    </article>
+  </div>
+  <div class="stack prose" style="padding-bottom: 3rem">
+    <p>
+      Pour un chèque, le secrétariat indique l’ordre exact et la mention à porter au dos
+      afin que le montant revienne bien à {{ settings.shortName }}.
+      Adresse : {{ settings.street }}, {{ settings.postalCode }} {{ settings.city }}.
+    </p>
+    <p>
+      Les dons au denier ouvrent droit, dans les conditions prévues par la loi, à une réduction d’impôt.
+      Le reçu fiscal est émis par l’Association diocésaine.
+    </p>
+    <p><a class="btn btn-navy" [href]="settings.donationsUrl">Page des dons du diocèse</a></p>
+    <p>
+      <a [href]="settings.bequestsUrl">Legs et donations, sur le site du diocèse</a>
+      · service diocésain du denier : <a [href]="'mailto:' + settings.denierEmail">{{ settings.denierEmail }}</a>
+    </p>
+  </div>
+</div>
